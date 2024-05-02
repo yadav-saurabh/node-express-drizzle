@@ -6,20 +6,26 @@ Develop a user authentication system API using Node.js that includes user regist
 
 ## Requirements
 
-Setup & Dependencies:
-Initialize a new Node.js project.
-Use Express.js as the web framework.
-Choose a database (MongoDB or any SQL database like PostgreSQL, MySQL).
+### Setup & Dependencies
+
+Initialize a new Node.js project. \
+Use Express.js as the web framework.\
+Choose a database (MongoDB or any SQL database like PostgreSQL, MySQL). \
 Use a package like bcrypt for password hashing and jsonwebtoken for generating tokens.
-User Authentication API:
-Implement user registration (POST /api/register) with the following fields:
-Username (unique)
-Email (unique)
+
+#### API'S
+
+User Authentication API
+
+Implement user registration (`POST /api/register`) with the following fields:\
+Username (unique)\
+Email (unique)\
 Password (hashed)
-Implement user login (POST /api/login) which:
-Validates user credentials (username/email and password).
+
+Implement user login (`POST /api/login`) which Validates user credentials (username/email and password).
 Generates a JWT token upon successful authentication.
-Implement protected routes (GET /api/profile) that require authentication:
+
+Implement protected routes (`GET /api/profile`) that require authentication:\
 Validate JWT token to grant access to the user's profile information.
 
 ## Database Models
