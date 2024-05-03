@@ -68,14 +68,15 @@ Here is what you need.
 
       1. [Download](https://www.postgresql.org/download/) and install postgres in your local (if you don't have it already).
 
-      2. Create your own local db by executing `createDB <DB name>`
+      2. connect to postgres prompt `sudo -u postgres psql`
 
-      3. Now open your psql shell with the DB you created: `psql -h localhost -U postgres -d <DB name>`
+      3. Create a new user `CREATE USER my_user WITH ENCRYPTED PASSWORD 'user_password';`
 
-      4. Inside the psql shell execute `\conninfo`. And you will get the following info.  
-          ![image](https://user-images.githubusercontent.com/39329182/236612291-51d87f69-6dc1-4a23-bf4d-1ca1754e0a35.png)
+      4. Create your own local db by executing `create database my_database;`
 
-      5. Now extract all the info and add it to your DATABASE_URL. The url would look something like this `postgresql://postgres:postgres@localhost:5432/Your-DB-Name`. The port is configurable and does not have to be 5432.
+      5. Create your own local db by executing `grant all privileges on database my_database to my_user;`
+
+      6. Now extract all the info and add it to your `.env`. The port is configurable and does not have to be 5432.
 
     - If you don't want to create a local DB. Then you can also consider using services like railway.app or render.
 
@@ -85,7 +86,7 @@ Here is what you need.
 7. Setting up the migrations
 
     ```bash
-    npm run migration:run
+    npm run drizzle:migration-run
     ```
 
 8. Run the node server

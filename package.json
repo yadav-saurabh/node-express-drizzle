@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "start": "pm2 start ecosystem.config.json",
     "dev": "NODE_ENV=local nodemon node index.js",
     "drizzle:studio": "drizzle-kit studio",
     "drizzle:db-push": "drizzle-kit push:pg",
