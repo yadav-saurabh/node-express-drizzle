@@ -4,8 +4,11 @@ import bodyParser from "body-parser";
 import compression from "compression";
 import cors from "cors";
 import passport from "passport";
+import swaggerJsdoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
 
 import routes from "./routes/index.js";
+import swaggerDefinition from "../docs/swagger-def.js";
 import * as errorMiddleware from "./middlewares/error.middleware.js";
 import { morganMiddleware } from "./middlewares/morgan.middleware.js";
 import { jwtStrategy } from "./config/passport.js";
@@ -37,6 +40,20 @@ passport.use("jwt", jwtStrategy);
 
 // api routes
 app.use("/api", routes);
+
+// api-docs
+const specs = swaggerJsdoc({
+  swaggerDefinition,
+  apis: ["docs/*.yml", "src/routes/*.js"],
+});
+
+app.use("/api-docs", swaggerUi.serve);
+app.get(
+  "/api-docs",
+  swaggerUi.setup(specs, {
+    explorer: true,
+  })
+);
 
 // if error is not an instanceOf APIError, convert it.
 app.use(errorMiddleware.converter);

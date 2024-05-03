@@ -35,6 +35,23 @@ export async function login(req, res, next) {
   }
 }
 
+export async function logout(req, res, next) {
+  try {
+    const token = await tokenService.findToken(
+      req.body.refreshToken,
+      TOKEN_TYPES.REFRESH
+    );
+    if (!token) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "token not found");
+    }
+    await tokenService.deleteToken(token.id);
+    res.status(httpStatus.NO_CONTENT).send();
+  } catch (error) {
+    next(error);
+  }
+}
+
+
 export async function refreshTokens(req, res, next) {
   try {
     const tokens = await tokenService.refreshAuth(req.body.refreshToken);

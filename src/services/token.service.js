@@ -50,7 +50,7 @@ export async function verifyToken(token, type) {
     where: and(
       eq(tokens.userId, payload.sub),
       eq(tokens.token, token),
-      eq(tokens.type, type),
+      eq(tokens.type, type)
     ),
   });
   if (!tokenDoc) {
@@ -152,13 +152,10 @@ export async function refreshAuth(refreshToken) {
  * @param {string} type
  * @returns {Promise<tokens>}
  */
-export async function findToken(userId, token, type) {
+export async function findToken(token, type) {
   return db
     .delete(tokens)
-    .where(
-      and(eq(tokens.userId, userId), eq(tokens.token, token)),
-      eq(tokens.type, type)
-    );
+    .where(and(eq(tokens.token, token)), eq(tokens.type, type));
 }
 
 /**
