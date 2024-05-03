@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import dayjs from "dayjs";
 import httpStatus from "http-status";
-import { and } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 import env from "../config/config.js";
 import * as userService from "./user.service.js";
@@ -99,6 +99,29 @@ export async function generateAuthTokens(user) {
 }
 
 /**
+ * Refresh auth tokens
+ * @param {string} refreshToken
+ * @returns {Promise<Object>}
+ */
+export async function refreshAuth(refreshToken) {
+  try {
+    const refreshTokenDoc = await verifyToken(
+      refreshToken,
+      TOKEN_TYPES.REFRESH
+    );
+    const user = await userService.getUserById(refreshTokenDoc.userId);
+    if (!user) {
+      throw new Error();
+    }
+    await deleteToken(refreshTokenDoc.id);
+    return generateAuthTokens(user);
+  } catch (error) {
+    console.log(error);
+    throw new ApiError(httpStatus.UNAUTHORIZED, "Please authenticate");
+  }
+}
+
+/**
  * Generate reset password token
  * @param {string} usernameOrEmail
  * @returns {Promise<string>}
@@ -149,8 +172,6 @@ export async function generateVerifyEmailToken(user) {
  * @param {users} user
  * @returns {Promise}
  */
-export async function deleteToken(token, type) {
-  return db
-    .delete(tokens)
-    .where(and(eq(tokens.token, token), eq(tokens.type, type)));
+export async function deleteToken(id) {
+  return db.delete(tokens).where(eq(tokens.id, id));
 }

@@ -34,3 +34,9 @@ export const tokens = pgTable("tokens", {
 });
 
 export const insertTokenSchema = z.object({ body: createInsertSchema(tokens) });
+
+export const refreshTokenSchema = z.object({
+  body: z.object({
+    refreshToken: z.string(),
+  }),
+});

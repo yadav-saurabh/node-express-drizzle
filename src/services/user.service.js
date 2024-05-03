@@ -1,4 +1,3 @@
-import httpStatus from "http-status";
 import bcrypt from "bcrypt";
 import { eq, or } from "drizzle-orm";
 

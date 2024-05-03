@@ -1,7 +1,7 @@
 import "dotenv/config.js";
 import z from "zod";
 
-import logger from "../config/logger.js";
+import logger from "./logger.js";
 
 const EnvVariables = z.object({
   PORT: z.preprocess((a) => +a, z.number().optional().default(5000)),

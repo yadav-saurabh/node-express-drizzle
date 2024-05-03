@@ -1,9 +1,9 @@
 import { sql } from "drizzle-orm";
 
-import app from "./app.js";
-import env from "./config/config.js";
-import logger from "./config/logger.js";
-import { db } from "./db/index.js";
+import app from "./src/app.js";
+import env from "./src/config/config.js";
+import logger from "./src/config/logger.js";
+import { db } from "./src/db/index.js";
 
 // start the server
 const server = app.listen(env.port, () => {
