@@ -3,10 +3,12 @@ import helmet from "helmet";
 import bodyParser from "body-parser";
 import compression from "compression";
 import cors from "cors";
+import passport from "passport";
 
 import routes from "./routes/index.js";
+import * as errorMiddleware from "./middlewares/error.middleware.js";
 import { morganMiddleware } from "./middlewares/morgan.middleware.js";
-import { converter, notFound, handler } from "./middlewares/error.middleware.js";
+import { jwtStrategy } from "./config/passport.js";
 
 const app = express();
 
@@ -29,16 +31,20 @@ app.use(helmet());
 // enable cors
 app.use(cors());
 
+// jwt authentication
+app.use(passport.initialize());
+passport.use("jwt", jwtStrategy);
+
 // api routes
 app.use("/api", routes);
 
 // if error is not an instanceOf APIError, convert it.
-app.use(converter);
+app.use(errorMiddleware.converter);
 
 // catch 404 and forward
-app.use(notFound);
+app.use(errorMiddleware.notFound);
 
 // error handler, send stacktrace only during development/local env
-app.use(handler);
+app.use(errorMiddleware.handler);
 
 export default app;

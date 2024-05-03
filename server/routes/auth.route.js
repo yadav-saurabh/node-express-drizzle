@@ -1,11 +1,17 @@
 import { Router } from "express";
 
-import { register, login } from "../controllers/auth.controller.js";
+import { authController } from "../controllers/index.js";
+import { insertUserSchema, loginUserSchema } from "../db/users.schema.js";
+import { validateMiddleware } from "../middlewares/validate.middleware.js";
 
 const authRoutes = Router();
 
-authRoutes.route("/register").get(register);
+authRoutes
+  .route("/register")
+  .post(validateMiddleware(insertUserSchema), authController.register);
 
-authRoutes.route("/login").get(login);
+authRoutes
+  .route("/login")
+  .post(validateMiddleware(loginUserSchema), authController.login);
 
 export { authRoutes };

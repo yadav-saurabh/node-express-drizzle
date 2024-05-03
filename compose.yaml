@@ -4,9 +4,9 @@ services:
   postgres:
     image: postgres
     restart: unless-stopped
-    container_name: postgres
+    container_name: node-auth-postgres
     environment:
-      POSTGRES_DB: ${POSTGRESQL_DB}
+      POSTGRES_DB: ${POSTGRESQL_DB_NAME}
       POSTGRES_USER: ${POSTGRESQL_USER}
       POSTGRES_PASSWORD: ${POSTGRESQL_PASSWORD}
     ports:

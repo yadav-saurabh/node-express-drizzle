@@ -10,7 +10,7 @@ const fileRotateTransport = new transports.DailyRotateFile({
 });
 
 const logger = createLogger({
-  level: "info",
+  level: "silly",
   format: json(),
   transports: [
     fileRotateTransport,
