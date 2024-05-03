@@ -24,7 +24,7 @@ export async function createUser(data) {
  * @param {string} usernameOrEmail
  * @returns {Promise<users>}
  */
-export async function getUserByUsernameOrEmail(usernameOrEmail) {
+export function getUserByUsernameOrEmail(usernameOrEmail) {
   return db.query.users.findFirst({
     where: or(
       eq(users.email, usernameOrEmail),
@@ -34,23 +34,27 @@ export async function getUserByUsernameOrEmail(usernameOrEmail) {
 }
 
 /**
- * Query for users
- * @param {Object} filter - filter
- * @param {Object} options - Query options
- * @param {string} [options.sortBy] - Sort option in the format: sortField:(desc|asc)
- * @param {number} [options.limit] - Maximum number of results per page (default = 10)
- * @param {number} [options.page] - Current page (default = 1)
- * @returns {Promise<users[]>}
- */
-export function queryUsers() {
-  return db.query.users.findMany({});
-}
-
-/**
  * Get user by id
  * @param {ObjectId} id
  * @returns {Promise<users>}
  */
 export function getUserById(id) {
-  return db.query.users.findFirst({ where: eq(users.id, id) });
+  return db.query.users.findFirst({ where: eq(users.id, id) }).then((res) => {
+    delete res.password;
+    return res;
+  });
+}
+
+/**
+ * Get user by id
+ * @param {string} id
+ * @param {Object} data
+ * @returns {Promise<users>}
+ */
+export async function updateUserById(id, data) {
+  if (data.password) {
+    // !NOTE: hashing password in the orm events like mongoose and sequelize will be great but currently drizzle orm doesn't support events
+    data.password = await bcrypt.hash(data.password, 10);
+  }
+  return db.update(users).set(data).where(eq(users.id, id));
 }

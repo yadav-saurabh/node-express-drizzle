@@ -1,12 +1,5 @@
 import { sql } from "drizzle-orm";
-import {
-  text,
-  timestamp,
-  pgTable,
-  uuid,
-  boolean,
-  pgEnum,
-} from "drizzle-orm/pg-core";
+import { text, timestamp, pgTable, uuid, pgEnum } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -16,7 +9,6 @@ import { TOKEN_TYPES } from "../config/tokens.js";
 export const tokenTypes = pgEnum("token_types", [
   TOKEN_TYPES.REFRESH,
   TOKEN_TYPES.RESET_PASSWORD,
-  TOKEN_TYPES.VERIFY_EMAIL,
 ]);
 
 export const tokens = pgTable("tokens", {
@@ -28,7 +20,6 @@ export const tokens = pgTable("tokens", {
     .references(() => users.id, { onDelete: "cascade" }),
   token: text("token").notNull(),
   type: tokenTypes("type").notNull(),
-  blacklisted: boolean("blacklisted").notNull().default(false),
   expires: timestamp("expires").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
@@ -40,3 +31,5 @@ export const refreshTokenSchema = z.object({
     refreshToken: z.string(),
   }),
 });
+
+export const logoutTokenSchema = refreshTokenSchema;

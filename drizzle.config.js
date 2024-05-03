@@ -1,7 +1,7 @@
 import "dotenv/config";
 
 export default {
-  schema: "db/schema.js",
+  schema: "src/db/schema.js",
   out: "drizzle/migrations",
   driver: "pg",
   dbCredentials: {

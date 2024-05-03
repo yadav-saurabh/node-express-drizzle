@@ -45,12 +45,12 @@ export function saveToken(data) {
  */
 export async function verifyToken(token, type) {
   const payload = jwt.verify(token, env.jwt.secret);
+  console.log(payload);
   const tokenDoc = await db.query.tokens.findFirst({
     where: and(
       eq(tokens.userId, payload.sub),
       eq(tokens.token, token),
       eq(tokens.type, type),
-      eq(tokens.blacklisted, false)
     ),
   });
   if (!tokenDoc) {
@@ -99,29 +99,6 @@ export async function generateAuthTokens(user) {
 }
 
 /**
- * Refresh auth tokens
- * @param {string} refreshToken
- * @returns {Promise<Object>}
- */
-export async function refreshAuth(refreshToken) {
-  try {
-    const refreshTokenDoc = await verifyToken(
-      refreshToken,
-      TOKEN_TYPES.REFRESH
-    );
-    const user = await userService.getUserById(refreshTokenDoc.userId);
-    if (!user) {
-      throw new Error();
-    }
-    await deleteToken(refreshTokenDoc.id);
-    return generateAuthTokens(user);
-  } catch (error) {
-    console.log(error);
-    throw new ApiError(httpStatus.UNAUTHORIZED, "Please authenticate");
-  }
-}
-
-/**
  * Generate reset password token
  * @param {string} usernameOrEmail
  * @returns {Promise<string>}
@@ -129,7 +106,7 @@ export async function refreshAuth(refreshToken) {
 export async function generateResetPasswordToken(usernameOrEmail) {
   const user = await userService.getUserByUsernameOrEmail(usernameOrEmail);
   if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, "No users found");
+    throw new ApiError(httpStatus.NOT_FOUND, "No users");
   }
   const expires = dayjs().add(env.jwt.resetPasswordExpirationMinutes, "m");
   const resetPasswordToken = generateToken(
@@ -147,24 +124,41 @@ export async function generateResetPasswordToken(usernameOrEmail) {
 }
 
 /**
- * Generate verify email token
- * @param {users} user
- * @returns {Promise<string>}
+ * Refresh auth tokens
+ * @param {string} refreshToken
+ * @returns {Promise<Object>}
  */
-export async function generateVerifyEmailToken(user) {
-  const expires = dayjs().add(env.jwt.verifyEmailExpirationMinutes, "m");
-  const verifyEmailToken = generateToken(
-    user.id,
-    expires,
-    TOKEN_TYPES.VERIFY_EMAIL
-  );
-  await saveToken({
-    token: verifyEmailToken,
-    userId: user.id,
-    expires,
-    type: TOKEN_TYPES.VERIFY_EMAIL,
-  });
-  return verifyEmailToken;
+export async function refreshAuth(refreshToken) {
+  try {
+    const refreshTokenDoc = await verifyToken(
+      refreshToken,
+      TOKEN_TYPES.REFRESH
+    );
+    const user = await userService.getUserById(refreshTokenDoc.userId);
+    if (!user) {
+      throw new Error();
+    }
+    await deleteToken(refreshTokenDoc.id);
+    return generateAuthTokens(user);
+  } catch (error) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, "Please authenticate");
+  }
+}
+
+/**
+ * find token
+ * @param {string} userId
+ * @param {string} token
+ * @param {string} type
+ * @returns {Promise<tokens>}
+ */
+export async function findToken(userId, token, type) {
+  return db
+    .delete(tokens)
+    .where(
+      and(eq(tokens.userId, userId), eq(tokens.token, token)),
+      eq(tokens.type, type)
+    );
 }
 
 /**
@@ -174,4 +168,16 @@ export async function generateVerifyEmailToken(user) {
  */
 export async function deleteToken(id) {
   return db.delete(tokens).where(eq(tokens.id, id));
+}
+
+/**
+ * delete token
+ * @param {string} userId
+ * @param {string} type
+ * @returns {Promise}
+ */
+export async function deleteMany(userId, type) {
+  return db
+    .delete(tokens)
+    .where(and(eq(tokens.userId, userId), eq(tokens.type, type)));
 }

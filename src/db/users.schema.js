@@ -10,7 +10,16 @@ export const users = pgTable("users", {
   username: text("username").notNull().unique(),
   email: text("email").notNull().unique(),
   password: text("password").notNull(),
+  firstName: text("first_name"),
+  lastName: text("last_name"),
+  address: text("address"),
+  phone: text("phone"),
+  image: text("image"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at")
+    .notNull()
+    .defaultNow()
+    .$onUpdateFn(() => new Date()),
 });
 
 export const insertUserSchema = z.object({
@@ -42,6 +51,19 @@ export const insertUserSchema = z.object({
 export const loginUserSchema = z.object({
   body: z.object({
     usernameOrEmail: z.string(),
+    password: z.string(),
+  }),
+});
+
+export const forgotPasswordSchema = z.object({
+  body: z.object({
+    usernameOrEmail: z.string(),
+  }),
+});
+
+export const resetPasswordSchema = z.object({
+  body: z.object({
+    token: z.string(),
     password: z.string(),
   }),
 });
