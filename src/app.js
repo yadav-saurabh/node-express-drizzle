@@ -46,14 +46,8 @@ const specs = swaggerJsdoc({
   swaggerDefinition,
   apis: ["docs/*.yml", "src/routes/*.js"],
 });
-
 app.use("/api-docs", swaggerUi.serve);
-app.get(
-  "/api-docs",
-  swaggerUi.setup(specs, {
-    explorer: true,
-  })
-);
+app.get("/api-docs", swaggerUi.setup(specs, { explorer: true }));
 
 // if error is not an instanceOf APIError, convert it.
 app.use(errorMiddleware.converter);
