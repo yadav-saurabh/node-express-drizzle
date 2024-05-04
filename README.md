@@ -4,6 +4,8 @@ Node Express drizzle-orm boilerplate in ECMAScript Modules(mjs)
 
 ## Getting Started
 
+Access all the api-docs in this repository follow this link [API DOC LINK](https://node-express-drizzle.yadav-saurabh.com/api-docs/)
+
 To get a local copy up and running, please follow these simple steps.
 
 ### Prerequisites
@@ -104,3 +106,117 @@ Here is what you need.
       ```
 
 ## Deployment
+
+### ubuntu instance like in AWS,oracle etc
+
+1. Update the system
+
+    ```bash
+    sudo apt update        # Fetches the list of available updates
+    sudo apt upgrade       # Installs some updates; does not remove packages
+    sudo apt full-upgrade  # Installs updates; may also remove some packages, if needed
+    sudo apt autoremove    # Removes any old packages that are no longer needed
+    ```
+
+2. install pm2 globally
+
+    ```bash
+    npm install pm2 -g
+    ```
+
+3. Follow Development setup to get up and running the server in the instance
+
+4. Expose the instance to the network for the node_server_port (Ingress Rules for TCP protocol)
+
+5. allow firewall to accept the network for the port
+
+    ```bash
+    sudo iptables -I INPUT 6 -m state --state NEW -p tcp --dport node_server_port -j ACCEPT
+    sudo netfilter-persistent save
+    ```
+
+6. use the public ip of the instance to access the node server ex: 111.11.11.11:node_server_port
+
+#### using a custom domain (nginx and certbot)
+
+1. Expose instance to accepts network on port 80 and 443 (Ingress Rules for TCP protocol)
+
+2. allow firewall for port 80 and 443
+
+    ```bash
+    sudo iptables -I INPUT 6 -m state --state NEW -p tcp --dport 80 -j ACCEPT
+    sudo iptables -I INPUT 6 -m state --state NEW -p tcp --dport 443 -j ACCEPT
+    sudo netfilter-persistent save
+    ```
+
+3. install nginx
+
+    ```bash
+    sudo apt update
+    sudo apt install nginx
+    ```
+
+4. Now, you will create a configuration block for the Node server
+
+    ```bash
+    sudo nano /etc/nginx/sites-available/your_domain
+    ```
+
+    add this to the file /etc/nginx/sites-available/your_domain
+
+    ```text
+      server {
+        server_name your_domain www.your_domain;
+          location / {
+            proxy_pass http://localhost:node_server_port;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection 'upgrade';
+            proxy_set_header Host $host;
+            proxy_cache_bypass $http_upgrade;
+          }
+      }
+    ```
+
+5. Create a symlink, which tells Nginx to look for available web applications in the sites-available folder:
+
+    ```bash
+    sudo ln -s /etc/nginx/sites-available/your_domain /etc/nginx/sites-enabled/
+    ```
+
+6. Disable the default symlink otherwise, nginx will redirect all requests to the default site. Use the following command to unlink it.
+
+   ```bash
+    sudo unlink /etc/nginx/sites-enabled/default
+    ```
+
+7. Restart the Nginx service using the following command.
+
+   ```bash
+    sudo systemctl restart nginx
+    ```
+
+8. Install certbot
+
+    ```bash
+    sudo snap install core; sudo snap refresh core
+    sudo snap install --classic certbot
+    sudo ln -s /snap/bin/certbot /usr/bin/certbot
+    ```
+
+9. Obtain an SSL Certificate
+
+    ```bash
+    sudo certbot --nginx -d example.com -d www.example.com
+    ```
+
+10. Verifying Certbot Auto-Renewal
+
+    ```bash
+    sudo systemctl status snap.certbot.renew.service
+    ```
+
+## TODO
+
+- [ ] Test
+- [ ] CI/CD

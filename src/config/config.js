@@ -28,6 +28,7 @@ try {
 
 const env = {
   nodeEnv: process.env.NODE_ENV,
+  apiHost: process.env.API_HOST,
   port: envVars.PORT,
   db: {
     host: envVars.POSTGRESQL_HOST,
