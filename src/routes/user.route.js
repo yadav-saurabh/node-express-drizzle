@@ -29,6 +29,9 @@ const userRoutes = Router();
  *         content:
  *           application/json:
  *             schema:
+ *                $ref: '#/components/schemas/User'
+ *       "404":
+ *         $ref: '#/components/responses/NotFound'
  */
 userRoutes.route("/profile").get(authMiddleware, userController.getUserProfile);
 

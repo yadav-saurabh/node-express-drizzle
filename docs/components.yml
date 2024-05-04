@@ -1,0 +1,102 @@
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        firstName:
+          type: string
+        lastName:
+          type: string
+        address:
+          type: string
+        phone:
+          type: string
+        image:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      example:
+        id: bb85787c-cfa9-431a-ae63-29878e2f9141
+        username: test
+        email: test@test.com
+        firstName: test
+        lastName: test
+        address: some place
+        phone: +91 00000000
+        image: some image link
+        createdAt: 2024-05-2T16:18:04.793Z
+        updatedAt: 2024-05-2T16:18:04.793Z
+
+    Token:
+      type: object
+      properties:
+        token:
+          type: string
+        expires:
+          type: string
+          format: date-time
+      example:
+        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1YzcxYWQ0Zi05MDY5LTRkNTEtOTI4Ni1mM2FkYTQzNzI5MTAiLCJpYXQiOjE3MTQ3MzE0NTcsImV4cCI6MTcxNDczMzI1NywidHlwZSI6ImFjY2VzcyJ9.ZygGnanFeO-96I7RAV6HLMm5vGlfSxm1BKr4Ag-FwH8
+        expires: 2024-05-2T16:18:04.793Z
+
+    AuthTokens:
+      type: object
+      properties:
+        access:
+          $ref: "#/components/schemas/Token"
+        refresh:
+          $ref: "#/components/schemas/Token"
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: number
+        message:
+          type: string
+
+  responses:
+    DuplicateError:
+      description: ${key} ${value} already exists. Please try again using different value
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            code: 400
+            message: ${key} ${value} already exists. Please try again using different value
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            code: 401
+            message: Please authenticate
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            code: 404
+            message: Not found
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

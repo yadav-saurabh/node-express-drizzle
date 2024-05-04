@@ -48,13 +48,36 @@ const authRoutes = Router();
  *                 format: password
  *                 minLength: 6
  *                 description: At least one number, one special character, one Uppercase and one lowercase
+ *               firstName:
+ *                 type: string
+ *               lastName:
+ *                 type: string
+ *               address:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               image:
+ *                 type: string
  *             example:
  *               username: test
  *               email: test@test.com
  *               password: P@ssword123
+ *               firstName: test
+ *               lastName: test
  *     responses:
  *       "201":
  *         description: Created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
+ *                 tokens:
+ *                   $ref: '#/components/schemas/AuthTokens'
+ *       "400":
+ *         $ref: '#/components/responses/DuplicateError'
  */
 authRoutes
   .route("/register")
@@ -83,11 +106,29 @@ authRoutes
  *                 type: string
  *                 format: password
  *             example:
- *               email: test
+ *               usernameOrEmail: test
  *               password: P@ssword123
  *     responses:
  *       "200":
  *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
+ *                 tokens:
+ *                   $ref: '#/components/schemas/AuthTokens'
+ *       "401":
+ *         description: Invalid email or password
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               code: 401
+ *               message: username/email and password didn't match
  */
 authRoutes
   .route("/login")
@@ -115,6 +156,8 @@ authRoutes
  *     responses:
  *       "204":
  *         description: No content
+ *       "404":
+ *         $ref: '#/components/responses/NotFound'
  */
 authRoutes
   .route("/logout")
@@ -142,6 +185,12 @@ authRoutes
  *     responses:
  *       "200":
  *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/AuthTokens'
+ *       "401":
+ *         $ref: '#/components/responses/Unauthorized'
  */
 authRoutes
   .route("/refresh-tokens")
@@ -171,6 +220,8 @@ authRoutes
  *     responses:
  *       "204":
  *         description: No content
+ *       "404":
+ *         $ref: '#/components/responses/NotFound'
  */
 authRoutes
   .route("/forgot-password")
@@ -185,13 +236,6 @@ authRoutes
  *   post:
  *     summary: Reset password
  *     tags: [Auth]
- *     parameters:
- *       - in: query
- *         name: token
- *         required: true
- *         schema:
- *           type: string
- *         description: The reset password token
  *     requestBody:
  *       required: true
  *       content:
@@ -217,6 +261,13 @@ authRoutes
  *         description: No content
  *       "401":
  *         description: Password reset failed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               code: 401
+ *               message: Password reset failed
  */
 authRoutes
   .route("/reset-password")
