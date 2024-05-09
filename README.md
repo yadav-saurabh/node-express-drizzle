@@ -4,8 +4,6 @@ Node Express drizzle-orm boilerplate in ECMAScript Modules(mjs)
 
 ## Getting Started
 
-Access all the api-docs in this repository follow this link [API DOC LINK](https://node-express-drizzle.yadav-saurabh.com/api-docs/)
-
 To get a local copy up and running, please follow these simple steps.
 
 ### Prerequisites
