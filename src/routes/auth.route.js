@@ -21,7 +21,7 @@ const authRoutes = Router();
 
 /**
  * @swagger
- * /register:
+ * /auth/register:
  *   post:
  *     summary: Register as user
  *     tags: [Auth]
@@ -85,7 +85,7 @@ authRoutes
 
 /**
  * @swagger
- * /login:
+ * /auth/login:
  *   post:
  *     summary: Login
  *     tags: [Auth]
@@ -136,7 +136,7 @@ authRoutes
 
 /**
  * @swagger
- * /logout:
+ * /auth/logout:
  *   post:
  *     summary: Logout
  *     tags: [Auth]
@@ -165,7 +165,7 @@ authRoutes
 
 /**
  * @swagger
- * /refresh-tokens:
+ * /auth/refresh-tokens:
  *   post:
  *     summary: Refresh auth tokens
  *     tags: [Auth]
@@ -198,7 +198,7 @@ authRoutes
 
 /**
  * @swagger
- * /forgot-password:
+ * /auth/forgot-password:
  *   post:
  *     summary: Forgot password
  *     description: An email will be sent to reset password.
@@ -232,7 +232,7 @@ authRoutes
 
 /**
  * @swagger
- * /reset-password:
+ * /auth/reset-password:
  *   post:
  *     summary: Reset password
  *     tags: [Auth]

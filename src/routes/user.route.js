@@ -11,12 +11,9 @@ import { authMiddleware } from "../middlewares/auth.middleware.js";
  */
 const userRoutes = Router();
 
-// !NOTE: userRoutes.use(authMiddleware) will also apply on all /api/* apart from authController routes, so instead of 404 it will be 401
-// userRoutes.use(authMiddleware);
-
 /**
  * @swagger
- * /profile:
+ * /users/profile:
  *   get:
  *     summary: Get a user
  *     description: Logged in users can fetch only their own user information.
@@ -33,6 +30,6 @@ const userRoutes = Router();
  *       "404":
  *         $ref: '#/components/responses/NotFound'
  */
-userRoutes.route("/profile").get(authMiddleware, userController.getUserProfile);
+userRoutes.route("/profile").get(userController.getUserProfile);
 
 export { userRoutes };
